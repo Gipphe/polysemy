@@ -1,18 +1,11 @@
+os: linux
 language: haskell
 dist: trusty
 
 cache:
   directories:
     - $HOME/.cabal/store
-
-cabal: "3.0"
-
-matrix:
-  include:
-    - ghc: "8.10.1"
-    - ghc: "8.8.1"
-    - ghc: "8.6.5"
-    - ghc: "8.4.4"
+    - /nix/store
 
 install:
  - cabal --version
@@ -37,3 +30,17 @@ script:
  - cabal v2-build polysemy-plugin
  - cabal v2-test --enable-test polysemy-plugin
 
+jobs:
+  include:
+    - ghc: "8.10.1"
+    - ghc: "8.8.1"
+    - ghc: "8.6.5"
+    - ghc: "8.4.4"
+    - language: nix
+      script:
+        - echo "trusted-users = root travis" | sudo tee -a /etc/nix/nix.conf
+        - sudo systemctl restart nix-daemon
+        - nix-env -iA nixpkgs.cachix
+        - cachix use tek
+        - nix-build -A polysemy
+        - nix-build -A polysemy-plugin

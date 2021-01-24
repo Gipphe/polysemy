@@ -220,6 +220,33 @@ You're going to want to stick all of this into your `package.yaml` file.
     - TypeFamilies
 ```
 
+## Building with Nix
+
+The project provides a basic nix config for building in development.
+
+To build the main library or plugin:
+
+```bash
+nix-build -A polysemy
+nix-build -A polysemy-plugin
+```
+
+To inspect a dependency:
+
+```bash
+nix repl
+
+> p = import ./.
+> p.unagi-chan
+```
+
+To run a shell command with all dependencies in the environment:
+
+```bash
+nix-shell --pure --run cabal v2-haddock polysemy
+nix-shell --pure --run ghcid
+```
+
 ## *What about performance?* ([TL;DR](#tldr))
 
 Previous versions of this `README` mentioned **the library being**
